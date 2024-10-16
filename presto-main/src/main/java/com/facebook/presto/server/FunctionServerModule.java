@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.facebook.airlift.configuration.ConfigBinder.configBinder;
 import static com.facebook.airlift.jaxrs.JaxrsBinder.jaxrsBinder;
 import static com.facebook.airlift.json.JsonCodec.listJsonCodec;
 
@@ -59,6 +60,8 @@ public class FunctionServerModule
         binder.bind(ObjectMapper.class).toProvider(JsonObjectMapperProvider.class);
         binder.bind(new TypeLiteral<JsonCodec<Map<String, List<JsonBasedUdfFunctionMetadata>>>>() {})
                 .toInstance(new JsonCodecFactory().mapJsonCodec(String.class, listJsonCodec(JsonBasedUdfFunctionMetadata.class)));
+        binder.bind(FunctionPluginManager.class).in(Scopes.SINGLETON);
+        configBinder(binder).bindConfig(PluginManagerConfig.class);
     }
 
     @Provides
